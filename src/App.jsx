@@ -3,6 +3,7 @@ import { Movie } from './components/Movie'
 import { InputButton } from './components/InputButton'
 import { LivesCounter } from './components/LivesCounter'
 import { ScoreCounter } from './components/ScoreCounter'
+import { GameOver } from './components/GameOver'
 
 
 
@@ -39,6 +40,8 @@ const App = () => {
   //useState para score y vidas
   const [score, setScore] = useState(0)
   const [lives, setLives] = useState(3)
+  //useState para reiniciar Game
+  const [gameOver, setGameOver] = useState(false)
 
   const checkAnswer = (answer) => {
     //conviertir a minusculas nombres de las peliculas en el objet
@@ -51,34 +54,32 @@ const App = () => {
     } else {
       setLives(lives - 1)
       if (lives === 1) {
-        alert('Game Over - Try Again')
+        setGameOver(true)
       }
     }
   }
 
+  const restartGame = () => {
+    setCurrentMovieIndex(0)
+    setScore(0)
+    setLives(0)
+    setGameOver(false)
+  }
+
   return (
-    <div>
-      <div className='container'>
-        <div className='header'>
-          <ScoreCounter score={score} />
-          <LivesCounter lives={lives} />
-        </div>
-        <div className='movie-container'>
-
-          <Movie emoji={movies[currentMovieIndex].emoji} />
-        </div>
-        <div className='input-container'>
-          <InputButton checkAnswer={checkAnswer} />
-
-        </div>
-
+    <div className="container">
+      <div className="header">
+        <LivesCounter lives={lives} />
+        <ScoreCounter score={score} />
       </div>
-
-
-
-
-
-
+      {gameOver ? (
+        <GameOver restartGame={restartGame} />
+      ) : (
+        <div>
+          <Movie emoji={movies[currentMovieIndex].emoji} />
+          <InputButton checkAnswer={checkAnswer} />
+        </div>
+      )}
     </div>
   )
 }
